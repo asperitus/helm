@@ -1,0 +1,91 @@
+apiVersion: v1
+entries:
+  btcpayd:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-11-09T12:10:47.082618-08:00
+    description: A Helm chart for Kubernetes
+    digest: 38946f17284addbe2df86ac1182ad4527c0277efdf920b001b0a82e3bafe2617
+    name: btcpayd
+    urls:
+    - https://asperitus.github.io/helm/btcpayd-0.1.0.tgz
+    version: 0.1.0
+  flink:
+  - apiVersion: v1
+    created: 2018-11-09T12:10:47.083072-08:00
+    description: Apache Flink® is an open-source stream processing framework for distributed,
+      high-performing, always-available, and accurate data streaming applications.
+    digest: b08d22b56dc773083c324f5c6ef0b57a15a1b5a6873c9703086dad0fcb5f198f
+    home: https://flink.apache.org
+    icon: https://flink.apache.org/img/logo/png/200/flink_squirrel_200_color.png
+    maintainers:
+    - email: me@patricklucas.com
+      name: Patrick Lucas
+    name: flink
+    sources:
+    - https://github.com/apache/flink
+    - https://github.com/docker-flink/examples
+    urls:
+    - https://asperitus.github.io/helm/flink-1.4.0.tgz
+    version: 1.4.0
+  foregate:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-11-09T12:10:47.083432-08:00
+    description: A Helm chart for Kubernetes
+    digest: 9486940753efd47509f6cff954e0b0f0c7829ac638bd80dddbaf523dc54e916d
+    name: foregate
+    urls:
+    - https://asperitus.github.io/helm/foregate-0.1.0.tgz
+    version: 0.1.0
+  kafka-manager:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-11-09T12:10:47.083818-08:00
+    description: A Helm chart for Kubernetes
+    digest: fdfcd36ed6e790932cafc49d5650f00dad783abc2738d653412c219bde143f56
+    name: kafka-manager
+    urls:
+    - https://asperitus.github.io/helm/kafka-manager-0.1.0.tgz
+    version: 0.1.0
+  lightningd:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-11-09T12:10:47.084507-08:00
+    description: A Helm chart for Kubernetes
+    digest: d36352743cded6b871c2795cdb20d47782254a495ec3359103b164684af1d353
+    name: lightningd
+    urls:
+    - https://asperitus.github.io/helm/lightningd-0.1.0.tgz
+    version: 0.1.0
+  matrix:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-11-09T12:10:47.084951-08:00
+    description: A Helm chart for Kubernetes
+    digest: 9362e7a46479fb115fca38f74d3c6deb5f02a40c9112d23d535c6f0ac2ca4948
+    name: matrix
+    urls:
+    - https://asperitus.github.io/helm/matrix-0.1.0.tgz
+    version: 0.1.0
+  nifi:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-11-09T12:10:47.08535-08:00
+    description: A Helm chart for Kubernetes
+    digest: a503c38b6ede703aaf9e275cbac5e9e74b00f7a4c564dcf1771c9f4b868037d9
+    name: nifi
+    urls:
+    - https://asperitus.github.io/helm/nifi-0.1.0.tgz
+    version: 0.1.0
+  nifi-registry:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-11-09T12:10:47.085749-08:00
+    description: A Helm chart for Kubernetes
+    digest: 91084b5cc39aaae491cc499a97bac8b15e78287d669ba159d8c97b74fc1d468a
+    name: nifi-registry
+    urls:
+    - https://asperitus.github.io/helm/nifi-registry-0.1.0.tgz
+    version: 0.1.0
+generated: 2018-11-09T12:10:47.081883-08:00
