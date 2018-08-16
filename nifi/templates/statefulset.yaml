@@ -38,9 +38,9 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           # image: xemuliam/nifi:1.4.0
-          # image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          # imagePullPolicy: {{ .Values.image.pullPolicy }}
-          image: apache/nifi:1.7.1
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # image: apache/nifi:1.7.1
           # command: ["/bin/sh","-c"]
           # args: ["chmod +x /opt/nifi/run.sh; cd /opt/nifi && ./run.sh"]
           # args: ["cd /opt/nifi && /bin/sh ./run.sh"]
@@ -91,7 +91,7 @@ spec:
       # - name: runconfig
       #   configMap:
       #     name: nifi-bootstrap
-
+      restartPolicy: Always
   volumeClaimTemplates:
     - metadata:
         name: nifi-repo

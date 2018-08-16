@@ -9,15 +9,26 @@ helm repo add asperitus https://asperitus.github.io/helm
 
 Create namespace:
 
-kubectl create namespace dsp
+kubectl create namespace fe
 
 
-Zookeeper:
+zookeeper:
 
-helm install --namespace dsp --name zookeeper incubator/zookeeper \
+helm install --namespace fe --name zookeeper incubator/zookeeper \
       --set replicaCount=1 \
       --set fullnameOverride=zookeeper
 
-Nifi:
+nifi:
 
-helm install --namespace dsp --name nifi asperitus/nifi
+helm install --namespace fe --name nifi asperitus/nifi
+
+helm install --namespace fe --name nifi asperitus/nifi \
+    --set replicaCount=1 \
+    --set zookeeper.enabled=false \
+    --set zookeeper.url=zookeeper:2181
+
+#local repo
+helm install --namespace fe --name nifi ./nifi \
+    --set replicaCount=1 \
+    --set zookeeper.enabled=false \
+    --set zookeeper.url=zookeeper:2181

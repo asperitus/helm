@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: nifi-http
 spec:
-  type: LoadBalancer
+  type: {{ .Values.service.type }}
   selector:
     app: nifi
   ports:
