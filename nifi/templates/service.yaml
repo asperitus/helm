@@ -11,6 +11,10 @@ spec:
       port: 8080
       targetPort: 8080
       name: nifi
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+      name: ingest
 
 ---
 apiVersion: v1
