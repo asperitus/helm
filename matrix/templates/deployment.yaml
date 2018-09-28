@@ -1,0 +1,60 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "matrix.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "matrix.name" . }}
+    helm.sh/chart: {{ include "matrix.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "matrix.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "matrix.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if contains "service" .Values.matrix.command }}
+          command: ["matrix"]
+          args: ["service", "--probe", "8081", "--proxy", {{ .Values.matrix.proxy | quote }}, "--name", {{ .Values.matrix.service | quote }}, "--hostport", {{ .Values.matrix.hostport | quote }}{{- if .Values.matrix.url }}, "--url", {{ .Values.matrix.url | quote }}{{- end }}]
+          {{- else if contains "connect" .Values.matrix.command }}
+          command: ["matrix"]
+          args: ["connect", "--probe", "8081", "--proxy", {{ .Values.matrix.proxy | quote }}, "--service", {{ .Values.matrix.service | quote }}, "--listen", {{ .Values.service.port | quote }}{{- if .Values.matrix.url }}, "--url", {{ .Values.matrix.url | quote }}{{- end }}]
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: probe
+              containerPort: 8081
+              protocol: TCP
+          #
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: probe
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
