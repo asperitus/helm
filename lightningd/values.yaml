@@ -9,25 +9,39 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
-nameOverride: ""
-fullnameOverride: ""
+# nameOverride:
+fullnameOverride: lightningd
 
 service:
   type: ClusterIP
-  port: 9835
+  rpcPort: 19835
 
 ingress:
   enabled: false
-  annotations: {}
+  # annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # path: /
   # hosts:
   #   - chart-example.local
-  tls: []
+  # tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+persistence:
+  enabled: true
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # name: lightningd
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 100Mi
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -46,3 +60,23 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+##
+bitcoind:
+  enabled: true
+  fullnameOverride: bitcoind
+  #
+  service: 
+    rpcPort: 8332
+    testnetPort: 18332
+  persistence:
+    enabled: true
+    size: 1Gi
+  configurationFile:
+    bitcoin.conf: |-
+      testnet=1
+      whitelist=0.0.0.0/0
+      server=1
+      printtoconsole=1
+      rpcuser=rpcuser
+      rpcpassword=rpcpassword

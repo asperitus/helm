@@ -10,10 +10,10 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - port: {{ .Values.service.rpcPort }}
+      targetPort: rpc
       protocol: TCP
-      name: http
+      name: rpc
   selector:
     app: {{ include "lightningd.name" . }}
     release: {{ .Release.Name }}

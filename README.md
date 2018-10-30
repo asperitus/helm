@@ -32,3 +32,18 @@ helm install --namespace fe --name nifi ./nifi \
     --set replicaCount=1 \
     --set zookeeper.enabled=false \
     --set zookeeper.url=zookeeper:2181
+
+
+#bitcoin
+
+helm install --namespace ln --name lightning ./lightningd
+
+<!-- docker run -it --rm --entrypoint "/bin/bash" elementsproject/lightningd -->
+<!-- docker run -it --rm --entrypoint "/usr/bin/lightning-cli" elementsproject/lightningd --help -->
+
+kubectl exec -i -t -n ln $POD -- bash
+
+#dashboard
+kubectl proxy
+
+http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
