@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.16.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: bitcoind
+  name: bitcoind
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: bitcoind
+    spec:
+      containers:
+      - env:
+        - name: BITCOIN_EXTRA_ARGS
+          value: |
+            testnet=1
+            whitelist=0.0.0.0/0
+            server=1
+            rpcuser=rpcuser
+            rpcpassword=rpcpass
+        image: nicolasdorier/docker-bitcoin:0.16.3
+        name: bitcoind
+        ports:
+        - containerPort: 18333
+        resources: {}
+        volumeMounts:
+        - mountPath: /data
+          name: bitcoin-datadir
+      restartPolicy: Always
+      volumes:
+      - name: bitcoin-datadir
+        persistentVolumeClaim:
+          claimName: bitcoin-datadir
+status: {}

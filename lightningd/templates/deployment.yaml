@@ -1,0 +1,72 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "lightningd.fullname" . }}
+  labels:
+    app: {{ include "lightningd.name" . }}
+    chart: {{ include "lightningd.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "lightningd.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "lightningd.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          args:
+            - --bitcoin-rpcconnect=bitcoind
+            - --bitcoin-rpcuser=rpcuser
+            - --bitcoin-rpcpassword=rpcpass
+            - --network=testnet
+            - --alias=myawesomenode
+            - --log-level=debug
+          env:
+            - name: EXPOSE_TCP
+              value: "true"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: rpc
+              containerPort: {{ .Values.service.rpcPort }}
+              protocol: TCP
+            - name: testnet
+              containerPort: {{ .Values.service.testnetPort }}
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: rpc
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: rpc
+          volumeMounts:
+            - name: data
+              mountPath: /root/.lightning
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      #
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: clightning-bitcoin-datadir
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
