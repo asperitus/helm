@@ -1,0 +1,61 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../../../docker-compose.generated.yml
+    kompose.version: 1.16.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: clightning-bitcoin
+  name: clightning-bitcoin
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: clightning-bitcoin
+    spec:
+      containers:
+      - env:
+        - name: LIGHTNINGD_CHAIN
+          value: btc
+        - name: LIGHTNINGD_EXPLORERURL
+          value: http://nbxplorer:32838/
+        - name: LIGHTNINGD_NETWORK
+          value: testnet
+        - name: LIGHTNINGD_OPT
+          value: |
+            bitcoin-datadir=/etc/bitcoin
+            bitcoin-rpcconnect=bitcoind
+            announce-addr=:9735
+            bind-addr=0.0.0.0:9735
+            network=testnet
+            alias=
+            chain=btc
+        image: nicolasdorier/clightning:v0.6.2
+        name: btcpayserver-clightning-bitcoin
+        ports:
+        - containerPort: 9735
+        resources: {}
+        volumeMounts:
+        - mountPath: /root/.lightning
+          name: clightning-bitcoin-datadir
+        - mountPath: /etc/bitcoin
+          name: bitcoin-datadir
+        - mountPath: /root/.nbxplorer
+          name: nbxplorer-datadir
+      restartPolicy: Always
+      volumes:
+      - name: clightning-bitcoin-datadir
+        persistentVolumeClaim:
+          claimName: clightning-bitcoin-datadir
+      - name: bitcoin-datadir
+        persistentVolumeClaim:
+          claimName: bitcoin-datadir
+      - name: nbxplorer-datadir
+        persistentVolumeClaim:
+          claimName: nbxplorer-datadir
+status: {}
