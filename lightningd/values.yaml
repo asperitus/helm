@@ -15,6 +15,7 @@ fullnameOverride: lightningd
 service:
   type: ClusterIP
   rpcPort: 19835
+  chargePort: 19112
 
 ingress:
   enabled: false
@@ -63,7 +64,7 @@ affinity: {}
 
 ##
 bitcoind:
-  enabled: true
+  enabled: false
   fullnameOverride: bitcoind
   #
   service: 

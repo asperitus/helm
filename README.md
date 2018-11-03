@@ -36,6 +36,10 @@ helm install --namespace fe --name nifi ./nifi \
 
 #bitcoin
 
+helm install --namespace ln --name bitcoin -f ./lightningd/bitcoind-values.yaml stable/bitcoind --dry-run --debug
+
+#lightning/charge
+
 helm install --namespace ln --name lightning ./lightningd
 
 <!-- docker run -it --rm --entrypoint "/bin/bash" elementsproject/lightningd -->

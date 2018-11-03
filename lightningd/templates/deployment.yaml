@@ -19,11 +19,12 @@ spec:
         app: {{ include "lightningd.name" . }}
         release: {{ .Release.Name }}
     spec:
-      initContainers:
-        - name: init-bitcoind
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: IfNotPresent
-          command: ['sh', '-c', 'for i in {1..60}; do sleep 1; if bitcoin-cli -testnet -rpcconnect=bitcoind -rpcuser=rpcuser -rpcpassword=rpcpassword echo hello; then exit 0; fi; done; exit 1']
+      # curl --user rpcuser:rpcpassword -k http://127.0.0.1:8332 --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getinfo", "params": [] }' -H 'content-type: text/plain;'
+      # initContainers:
+      #   - name: init-bitcoind
+      #     image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+      #     imagePullPolicy: IfNotPresent
+      #     command: ['sh', '-c', 'for i in {1..60}; do sleep 1; if bitcoin-cli -testnet -rpcconnect=bitcoind -rpcuser=rpcuser -rpcpassword=rpcpassword echo hello; then exit 0; fi; done; exit 1']
       containers:
         - name: {{ .Chart.Name }}
           args:
@@ -40,18 +41,18 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: rpc
-              containerPort: 9835 #{{ .Values.service.rpcPort }}
+              containerPort: 9835
               protocol: TCP
-          readinessProbe:
-            tcpSocket:
-              port: rpc
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          livenessProbe:
-            tcpSocket:
-              port: rpc
-            initialDelaySeconds: 30
-            periodSeconds: 20
+          # readinessProbe:
+          #   tcpSocket:
+          #     port: rpc
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 10
+          # livenessProbe:
+          #   tcpSocket:
+          #     port: rpc
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 20
           # livenessProbe:
           #   httpGet:
           #     path: /
@@ -61,21 +62,47 @@ spec:
           #     path: /
           #     port: rpc
           volumeMounts:
-            - name: data
+            - name: clightning-data
               mountPath: /root/.lightning
-            # - name: bitcoin-data
-            #   mountPath: /etc/bitcoin
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+      ##
+        - name: lightning-charged
+          env:
+            - name: API_TOKEN
+              value: mySecretToken
+            - name: BITCOIND_URI
+              value: http://rpcuser:rpcpassword@bitcoind:18332
+            - name: NETWORK
+              value: testnet
+            - name: LN_PATH
+              value: /etc/lightning
+          image: shesek/lightning-charge:0.4.3
+          ports:
+            - name: charge
+              containerPort: 9112
+          resources: {}
+          volumeMounts:
+            - mountPath: /data
+              name: lightning-charge-data
+            - mountPath: /etc/lightning
+              name: clightning-data
       #
       volumes:
-        - name: data
+        - name: clightning-data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.name | default (include "lightningd.fullname" .) }}
         {{- else }}
           emptyDir: {}
-        {{- end -}}
+        {{- end }}
+        - name: lightning-charge-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.name | default (include "lightningd.fullname" .) }}-charged
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
