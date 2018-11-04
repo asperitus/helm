@@ -5,29 +5,43 @@
 replicaCount: 1
 
 image:
-  repository: nginx
-  tag: stable
+  repository: nicolasdorier/btcpayserver
+  tag: latest #1.0.3.4
   pullPolicy: IfNotPresent
 
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: btcpayd
+fullnameOverride: btcpayd
 
 service:
-  type: ClusterIP
-  port: 80
+  type: LoadBalancer
+  port: 23001
 
 ingress:
   enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  path: /
-  hosts:
-    - chart-example.local
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  # annotations: {}
+  #   # kubernetes.io/ingress.class: nginx
+  #   # kubernetes.io/tls-acme: "true"
+  # path: /
+  # hosts:
+  #   - chart-example.local
+  # tls: []
+  # #  - secretName: chart-example-tls
+  # #    hosts:
+  # #      - chart-example.local
+
+persistence:
+  enabled: true
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # name: btcpayd
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 100Mi
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -46,3 +60,16 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+#
+nbxplorer:
+  image:
+    repository: nicolasdorier/nbxplorer
+    tag: latest #1.1.0.8
+    pullPolicy: IfNotPresent
+  nameOverride: nbxplorer
+  fullnameOverride: nbxplorer
+  service:
+    type: ClusterIP
+    port: 24444
+

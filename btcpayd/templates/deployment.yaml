@@ -1,0 +1,134 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "btcpayd.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "btcpayd.name" . }}
+    helm.sh/chart: {{ include "btcpayd.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "btcpayd.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "btcpayd.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          # env:
+          #   - name: BTCPAY_BIND
+          #     value: 0.0.0.0:49392
+          #   - name: BTCPAY_BTCEXPLORERURL
+          #     value: http://nbxplorer:32838/
+          #   - name: BTCPAY_BTCLIGHTNING
+          #     value: type=clightning;server=unix://etc/clightning_bitcoin/lightning-rpc
+          #   - name: BTCPAY_CHAINS
+          #     value: ltc,btc
+          #   - name: BTCPAY_EXTERNALURL
+          #     value: https:///
+          #   - name: BTCPAY_LTCEXPLORERURL
+          #     value: http://nbxplorer:32838/
+          #   - name: BTCPAY_LTCLIGHTNING
+          #     value: type=clightning;server=unix://etc/clightning_litecoin/lightning-rpc
+          #   - name: BTCPAY_NETWORK
+          #     value: regtest
+          #   - name: BTCPAY_POSTGRES
+          #     value: User ID=postgres;Host=postgres;Port=5432;Database=btcpayserverregtest
+          #   - name: BTCPAY_ROOTPATH
+          #     value: /
+          #   - name: BTCPAY_SSHKEYFILE
+          #   - name: BTCPAY_SSHTRUSTEDFINGERPRINTS
+          args:
+            - --bind=0.0.0.0
+            - --port=23001
+            - --btcexplorerurl=http://localhost:24444/
+            - --btclightning=type=charge;server=https://lightningd:9112/;api-token=mySecretToken
+            - --network=testnet
+            - --chains=btc
+            - --postgres=User ID=postgres;Password=secretPassword;Host=postgres-db;Port=5432;Database=btcpayserver
+            - --datadir=/datadir
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: btcpay
+              containerPort: 23001
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          volumeMounts:
+            - mountPath: /datadir
+              name: btcpay-data
+            - mountPath: /root/.nbxplorer
+              name: nbxplorer-data
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      ##
+        - name: nbxplorer
+          args:
+            - --network=testnet
+            - --btcrpcuser=rpcuser
+            - --btcrpcpassword=rpcpassword
+            - --btcrpcurl=http://bitcoind:18332
+            - --btcnodeendpoint=bitcoind:18333
+            - --chains=btc
+            - --noauth=1
+            - --bind=0.0.0.0
+            - --port=24444
+            - --datadir=/datadir
+          image: "{{ .Values.nbxplorer.image.repository }}:{{ .Values.nbxplorer.image.tag }}"
+          imagePullPolicy: {{ .Values.nbxplorer.image.pullPolicy }}
+          ports:
+            - name: nbxplorer
+              containerPort: 24444
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          volumeMounts:
+            - mountPath: /datadir
+              name: nbxplorer-data
+      #
+      volumes:
+        - name: btcpay-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.name | default (include "btcpayd.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: nbxplorer-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.name | default (include "btcpayd.fullname" .) }}-nbxplorer
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

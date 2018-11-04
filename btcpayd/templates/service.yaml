@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "btcpayd.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "btcpayd.name" . }}
+    helm.sh/chart: {{ include "btcpayd.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: btcpay
+      protocol: TCP
+      name: btcpay
+    - port: {{ .Values.nbxplorer.service.port }}
+      targetPort: nbxplorer
+      protocol: TCP
+      name: nbxplorer
+  selector:
+    app.kubernetes.io/name: {{ include "btcpayd.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

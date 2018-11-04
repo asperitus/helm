@@ -36,11 +36,22 @@ helm install --namespace fe --name nifi ./nifi \
 
 #bitcoin
 
-helm install --namespace ln --name bitcoin -f ./lightningd/bitcoind-values.yaml stable/bitcoind --dry-run --debug
+helm install --namespace ln --name bitcoin -f ./lightningd/bitcoind-values.yaml stable/bitcoind
 
 #lightning/charge
 
 helm install --namespace ln --name lightning ./lightningd
+
+#postgres
+helm install --namespace ln --name postgres stable/postgresql \
+    --set nameOverride=db \
+    --set postgresqlUsername=postgres \
+    --set postgresqlPassword=secretPassword \
+    --set postgresqlDatabase=btcpayserver
+    
+#btcpay/nbxplorer
+helm install --namespace ln --name btcpay ./btcpayd
+
 
 <!-- docker run -it --rm --entrypoint "/bin/bash" elementsproject/lightningd -->
 <!-- docker run -it --rm --entrypoint "/usr/bin/lightning-cli" elementsproject/lightningd --help -->
