@@ -52,11 +52,34 @@ helm install --namespace ln --name postgres stable/postgresql \
 #btcpay/nbxplorer
 helm install --namespace ln --name btcpay ./btcpayd
 
+#mariadb
+helm install --namespace store --name mysql stable/mariadb \
+    --set nameOverride=db \
+    --set rootUser.password=secretPassword \
+    --set db.user=mysql \
+    --set db.password=secretPassword
+
+<!-- my_database -->
+<!-- --set db.name=storefront privileges not granted -->
+    
+kubectl -n store exec -i -t mysql-mariadb-master-0 -- mysql -uroot --password=secretPassword
+
+#wordpress/woocommerce
+helm install --namespace store --name wordpress stable/wordpress \
+    --set serviceType=LoadBalancer \
+    --set wordpressUsername=admin \
+    --set wordpressPassword=password \
+    --set mariadb.enabled=false \
+    --set externalDatabase.host=mysql-db \
+    --set externalDatabase.port=3306 \
+    --set externalDatabase.user=mysql \
+    --set externalDatabase.password=secretPassword \
+    --set externalDatabase.database=my_database
 
 <!-- docker run -it --rm --entrypoint "/bin/bash" elementsproject/lightningd -->
 <!-- docker run -it --rm --entrypoint "/usr/bin/lightning-cli" elementsproject/lightningd --help -->
 
-kubectl exec -i -t -n ln $POD -- bash
+<!-- kubectl exec -i -t -n ln $POD -- bash -->
 
 #dashboard
 kubectl proxy
