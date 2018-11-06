@@ -16,6 +16,10 @@ service:
   type: LoadBalancer
   port: 23001
 
+args:
+  network: testnet
+  externalUrl: ""
+
 ingress:
   enabled: false
   # annotations: {}

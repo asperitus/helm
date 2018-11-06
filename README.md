@@ -50,7 +50,9 @@ helm install --namespace ln --name postgres stable/postgresql \
     --set postgresqlDatabase=btcpayserver
     
 #btcpay/nbxplorer
-helm install --namespace ln --name btcpay ./btcpayd
+helm install --namespace ln --name btcpay ./btcpayd \
+    --set args.network=testnet \
+    --set args.externalUrl=https://btcpay.run.aws-usw02-pr.ice.predix.io/
 
 #mariadb
 helm install --namespace store --name mysql stable/mariadb \
@@ -80,6 +82,12 @@ helm install --namespace store --name wordpress stable/wordpress \
 <!-- docker run -it --rm --entrypoint "/usr/bin/lightning-cli" elementsproject/lightningd --help -->
 
 <!-- kubectl exec -i -t -n ln $POD -- bash -->
+
+#matrix
+
+./matrix bot --name bot --proxy $http_proxy
+./matrix cli --name cli --proxy $http_proxy
+/msg bot {"cmd":"rpc", "host_port":"localhost:23001", "remote_port":"23001"}
 
 #dashboard
 kubectl proxy

@@ -49,10 +49,11 @@ spec:
             - --port=23001
             - --btcexplorerurl=http://localhost:24444/
             - --btclightning=type=charge;server=https://lightningd:9112/;api-token=mySecretToken
-            - --network=testnet
+            - --network={{ .Values.args.network }}
             - --chains=btc
             - --postgres=User ID=postgres;Password=secretPassword;Host=postgres-db;Port=5432;Database=btcpayserver
             - --datadir=/datadir
+            - --externalurl={{ .Values.args.externalUrl }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
