@@ -51,7 +51,8 @@ spec:
             - --btclightning=type=charge;server=https://lightningd:9112/;api-token=mySecretToken
             - --network={{ .Values.args.network }}
             - --chains=btc
-            - --postgres=User ID=postgres;Password=secretPassword;Host=postgres-db;Port=5432;Database=btcpayserver
+            - --postgres=User ID=postgres;Password=secretPassword;Host=postgres-db.db;Port=5432;Database=btcpayserver
+            # - --mysql=User ID=root;Password=secretPassword;Host=mysql-db.db;Port=3306;Database=btcpayserver
             - --datadir=/datadir
             - --externalurl={{ .Values.args.externalUrl }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
