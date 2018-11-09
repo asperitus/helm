@@ -1,5 +1,4 @@
 # helm
-Kubernetes Helm charts
 
 <!-- 
 kubectl create serviceaccount --namespace kube-system tiller
@@ -8,13 +7,15 @@ kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"templat
 helm init --service-account tiller --upgrade
 -->
 
-Add charts repository:
+### add charts repository:
 
-helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+<!-- helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator -->
+```
 helm repo add asperitus https://asperitus.github.io/helm
+```
 
-
-Create namespace:
+<!--
+create namespace:
 
 kubectl create namespace fe
 
@@ -33,29 +34,39 @@ helm install --namespace fe --name nifi asperitus/nifi \
     --set replicaCount=1 \
     --set zookeeper.enabled=false \
     --set zookeeper.url=zookeeper:2181
+-->
 
-#local repo
+### nifi
+
+```
 helm install --namespace fe --name nifi ./nifi \
     --set replicaCount=1 \
     --set zookeeper.enabled=false \
     --set zookeeper.url=zookeeper:2181
+```
 
+### bitcoin
 
-#bitcoin
-
+```
 helm install --namespace ln --name bitcoin -f ./lightningd/bitcoind-values.yaml stable/bitcoind
+```
 
-#lightning/charge
+### lightning/charge
 
+```
 helm install --namespace ln --name lightning ./lightningd
+```
 
-#postgres
+### postgres
+
+```
 helm install --namespace db --name postgres stable/postgresql \
     --set nameOverride=db \
     --set postgresqlUsername=postgres \
     --set postgresqlPassword=secretPassword \
     --set postgresqlDatabase=btcpayserver
-    
+ ```
+
 <!--
 PostgreSQL can be accessed via port 5432 on the following DNS name from within your cluster:
 
@@ -77,13 +88,15 @@ To connect to your database from outside the cluster execute the following comma
     PGPASSWORD=secretPassword "psql --host 127.0.0.1 -U postgres
 -->
 
-#mariadb
+### mariadb
+```
 helm install --namespace db --name mysql stable/mariadb \
     --set nameOverride=db \
     --set service.port=3306 \
     --set rootUser.password=secretPassword \
     --set db.user=mysql \
     --set db.password=secretPassword
+```
 
 <!--
 Administrator credentials:
@@ -117,7 +130,8 @@ To upgrade this helm chart:
 <!-- --set db.name=storefront privileges not granted -->
 <!-- kubectl -n store exec -i -t mysql-mariadb-master-0 -- mysql -uroot --password=secretPassword -->
 
-#btcpay/nbxplorer
+### btcpay/nbxplorer
+```
 export URL=https://btcpay.run.aws-usw02-pr.ice.predix.io/
 
 helm install --namespace ln --name btcpay ./btcpayd \
@@ -127,6 +141,7 @@ helm install --namespace ln --name btcpay ./btcpayd \
     --set foregate.port=5080 \
     --set foregate.url=$URL \
     --set foregate.proxy=$http_proxy
+```
 
 <!--
 helm upgrade btcpay ./btcpayd --set args.externalUrl=http://localhost:23001/
@@ -148,10 +163,11 @@ helm install --namespace store --name wordpress stable/wordpress \
 
 <!-- docker run -it --rm --entrypoint "/bin/bash" elementsproject/lightningd -->
 <!-- docker run -it --rm --entrypoint "/usr/bin/lightning-cli" elementsproject/lightningd --help -->
-
 <!-- kubectl exec -i -t -n ln $POD -- bash -->
 
-#foregate
+### foregate
+
+```
 export URL=https://btcpay.run.aws-usw02-pr.ice.predix.io/
 
 helm install --namespace store --name wordpress-foregate ./foregate \
@@ -159,10 +175,18 @@ helm install --namespace store --name wordpress-foregate ./foregate \
     --set foregate.url=$URL \
     --set foregate.hostport=wordpress-store:80 \
     --set foregate.proxy=$http_proxy
+```
 
-#dashboard
+### dashboard
+
+```
 kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 
 kubectl proxy
 
 http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
+
+```
+
+
+<!--  -->
