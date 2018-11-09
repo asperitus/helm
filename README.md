@@ -118,16 +118,25 @@ To upgrade this helm chart:
 <!-- kubectl -n store exec -i -t mysql-mariadb-master-0 -- mysql -uroot --password=secretPassword -->
 
 #btcpay/nbxplorer
+export URL=https://btcpay.run.aws-usw02-pr.ice.predix.io/
+
 helm install --namespace ln --name btcpay ./btcpayd \
     --set args.network=testnet \
-    --set args.externalUrl=https://btcpay.run.aws-usw02-pr.ice.predix.io/
+    --set args.externalUrl=$URL \
+    --set foregate.enabled=true \
+    --set foregate.port=5080 \
+    --set foregate.url=$URL \
+    --set foregate.proxy=$http_proxy
 
+<!--
 helm upgrade btcpay ./btcpayd --set args.externalUrl=http://localhost:23001/
-helm upgrade btcpay ./btcpayd --set args.externalUrl=https://btcpay.run.aws-usw02-pr.ice.predix.io/
+helm upgrade btcpay ./btcpayd --set args.externalUrl=https://btcpay.run.aws-usw02-pr.ice.predix.io/ 
+-->
 
 #wordpress/woocommerce
 helm install --namespace store --name wordpress stable/wordpress \
-    --set serviceType=LoadBalancer \
+    --set nameOverride=store \
+    --set serviceType=ClusterIP \
     --set wordpressUsername=admin \
     --set wordpressPassword=password \
     --set mariadb.enabled=false \
@@ -142,17 +151,13 @@ helm install --namespace store --name wordpress stable/wordpress \
 
 <!-- kubectl exec -i -t -n ln $POD -- bash -->
 
-<!-- #matrix
-
-./matrix bot --name bot --proxy $http_proxy
-./matrix cli --name cli --proxy $http_proxy
-/msg bot {"cmd":"rpc", "host_port":"localhost:23001", "remote_port":"23001"} -->
-
 #foregate
-helm install --namespace ln --name foregate ./foregate \
+export URL=https://btcpay.run.aws-usw02-pr.ice.predix.io/
+
+helm install --namespace store --name wordpress-foregate ./foregate \
     --set foregate.port=5080 \
-    --set foregate.url=https://btcpay.run.aws-usw02-pr.ice.predix.io/ \
-    --set foregate.hostport=btcpayd:23001 \
+    --set foregate.url=$URL \
+    --set foregate.hostport=wordpress-store:80 \
     --set foregate.proxy=$http_proxy
 
 #dashboard

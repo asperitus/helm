@@ -13,7 +13,7 @@ nameOverride: btcpayd
 fullnameOverride: btcpayd
 
 service:
-  type: LoadBalancer
+  type: ClusterIP #LoadBalancer
   port: 23001
 
 args:
@@ -77,3 +77,13 @@ nbxplorer:
     type: ClusterIP
     port: 24444
 
+#
+foregate:
+  enabled: false
+  image:
+    repository: asperitus/foregate
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 5080
+  url: https://btcpay.run.aws-usw02-pr.ice.predix.io/
+  proxy: ""

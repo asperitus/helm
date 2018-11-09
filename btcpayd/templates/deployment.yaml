@@ -106,6 +106,19 @@ spec:
           volumeMounts:
             - mountPath: /datadir
               name: nbxplorer-data
+      ##
+      {{- if .Values.foregate.enabled }}
+        - name: foregate
+          command: ["foregate"]
+          args:
+            - client
+            - --url={{ .Values.foregate.url }}
+            - --port={{ .Values.foregate.port }}
+            - --hostport=localhost:23001
+            - --proxy={{ .Values.foregate.proxy }}
+          image: "{{ .Values.foregate.image.repository }}:{{ .Values.foregate.image.tag }}"
+          imagePullPolicy: {{ .Values.foregate.image.pullPolicy }}
+      {{- end }}
       #
       volumes:
         - name: btcpay-data
