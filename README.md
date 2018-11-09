@@ -131,6 +131,7 @@ To upgrade this helm chart:
 <!-- kubectl -n store exec -i -t mysql-mariadb-master-0 -- mysql -uroot --password=secretPassword -->
 
 ### btcpay/nbxplorer
+
 ```
 export URL=https://btcpay.run.aws-usw02-pr.ice.predix.io/
 
@@ -148,7 +149,9 @@ helm upgrade btcpay ./btcpayd --set args.externalUrl=http://localhost:23001/
 helm upgrade btcpay ./btcpayd --set args.externalUrl=https://btcpay.run.aws-usw02-pr.ice.predix.io/ 
 -->
 
-#wordpress/woocommerce
+### wordpress/woocommerce
+
+```
 helm install --namespace store --name wordpress stable/wordpress \
     --set nameOverride=store \
     --set serviceType=ClusterIP \
@@ -160,10 +163,7 @@ helm install --namespace store --name wordpress stable/wordpress \
     --set externalDatabase.user=mysql \
     --set externalDatabase.password=secretPassword \
     --set externalDatabase.database=my_database
-
-<!-- docker run -it --rm --entrypoint "/bin/bash" elementsproject/lightningd -->
-<!-- docker run -it --rm --entrypoint "/usr/bin/lightning-cli" elementsproject/lightningd --help -->
-<!-- kubectl exec -i -t -n ln $POD -- bash -->
+```
 
 ### foregate
 
@@ -190,3 +190,6 @@ http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-da
 
 
 <!--  -->
+<!-- docker run -it --rm --entrypoint "/bin/bash" elementsproject/lightningd -->
+<!-- docker run -it --rm --entrypoint "/usr/bin/lightning-cli" elementsproject/lightningd --help -->
+<!-- kubectl exec -i -t -n ln $POD -- bash -->
