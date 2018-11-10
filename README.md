@@ -154,7 +154,7 @@ helm upgrade btcpay ./btcpayd --set args.externalUrl=https://btcpay.run.aws-usw0
 ```
 export URL=https://btcpay.run.aws-usw02-pr.ice.predix.io/
 
-helm install --namespace store --name wordpress ./wordpress \
+helm install --namespace store --name wordpress asperitus/wordpress \
     --set nameOverride=store \
     --set serviceType=ClusterIP \
     --set wordpressUsername=admin \

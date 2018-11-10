@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+helm dependency update lightningd
+helm dependency update nifi
+helm dependency update wordpress
+
 CHARTS=(
 btcpayd
 flink
@@ -9,6 +13,7 @@ lightningd
 matrix
 nifi
 nifi-registry
+wordpress
 )
 
 for c in ${CHARTS[@]}; do
