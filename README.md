@@ -36,14 +36,14 @@ helm install --namespace fe --name nifi asperitus/nifi \
     --set zookeeper.url=zookeeper:2181
 -->
 
-### nifi
+<!-- ### nifi
 
 ```
 helm install --namespace fe --name nifi ./nifi \
     --set replicaCount=1 \
     --set zookeeper.enabled=false \
     --set zookeeper.url=zookeeper:2181
-```
+``` -->
 
 ### bitcoin
 
@@ -152,7 +152,9 @@ helm upgrade btcpay ./btcpayd --set args.externalUrl=https://btcpay.run.aws-usw0
 ### wordpress/woocommerce
 
 ```
-helm install --namespace store --name wordpress stable/wordpress \
+export URL=https://btcpay.run.aws-usw02-pr.ice.predix.io/
+
+helm install --namespace store --name wordpress ./wordpress \
     --set nameOverride=store \
     --set serviceType=ClusterIP \
     --set wordpressUsername=admin \
@@ -162,7 +164,11 @@ helm install --namespace store --name wordpress stable/wordpress \
     --set externalDatabase.port=3306 \
     --set externalDatabase.user=mysql \
     --set externalDatabase.password=secretPassword \
-    --set externalDatabase.database=my_database
+    --set externalDatabase.database=my_database \
+    --set foregate.enabled=true \
+    --set foregate.port=5080 \
+    --set foregate.url=$URL \
+    --set foregate.proxy=$http_proxy
 ```
 
 ### foregate
