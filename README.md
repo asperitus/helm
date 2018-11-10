@@ -18,10 +18,6 @@ kubectl create namespace demo -->
 
 ### install chart
 
-<!-- helm install --namespace demo --name zookeeper incubator/zookeeper \
-      --set replicaCount=1 \
-      --set fullnameOverride=zookeeper -->
-
 <!-- 
 bash pkg.sh
 git checkout gh-pages
