@@ -6,7 +6,7 @@
     testnetPort: 18332
   persistence:
     enabled: true
-    size: 1Gi
+    size: 30Gi
   configurationFile:
     bitcoin.conf: |-
       testnet=1

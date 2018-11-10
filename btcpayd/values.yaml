@@ -45,7 +45,7 @@ persistence:
   # name: btcpayd
   # storageClass: "-"
   accessMode: ReadWriteOnce
-  size: 100Mi
+  size: 1Gi
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

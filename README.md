@@ -48,13 +48,14 @@ helm install --namespace fe --name nifi ./nifi \
 ### bitcoin
 
 ```
-helm install --namespace ln --name bitcoin -f ./lightningd/bitcoind-values.yaml stable/bitcoind
+helm install --namespace ln --name bitcoin -f ./bitcoind/values.yaml stable/bitcoind
 ```
 
 ### lightning/charge
 
 ```
-helm install --namespace ln --name lightning ./lightningd
+helm install --namespace ln --name lightning asperitus/lightningd \
+    --set persistence.size=10Gi
 ```
 
 ### postgres
@@ -135,7 +136,8 @@ To upgrade this helm chart:
 ```
 export URL=https://btcpay.run.aws-usw02-pr.ice.predix.io/
 
-helm install --namespace ln --name btcpay ./btcpayd \
+helm install --namespace ln --name btcpay asperitus/btcpayd \
+    --set persistence.size=2Gi \
     --set args.network=testnet \
     --set args.externalUrl=$URL \
     --set foregate.enabled=true \
@@ -176,7 +178,7 @@ helm install --namespace store --name wordpress asperitus/wordpress \
 ```
 export URL=https://btcpay.run.aws-usw02-pr.ice.predix.io/
 
-helm install --namespace store --name wordpress-foregate ./foregate \
+helm install --namespace store --name wordpress-foregate asperitus/foregate \
     --set foregate.port=5080 \
     --set foregate.url=$URL \
     --set foregate.hostport=wordpress-store:80 \
