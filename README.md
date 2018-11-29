@@ -140,11 +140,22 @@ helm install --namespace ln --name btcpay asperitus/btcpayd \
     --set persistence.size=2Gi \
     --set args.network=testnet \
     --set args.externalUrl=$URL \
-    --set foregate.enabled=true \
+    --set foregate.enabled=false \
     --set foregate.port=5080 \
     --set foregate.url=$URL \
     --set foregate.proxy=$http_proxy
 ```
+<!-- 
+helm upgrade btcpay asperitus/btcpayd \
+    --set persistence.size=2Gi \
+    --set args.network=testnet \
+    --set args.externalUrl=https://jixupay.run.aws-usw02-pr.ice.predix.io/ \
+    --set foregate.enabled=false \
+    --set foregate.port=5080 \
+    --set foregate.url=$URL \
+    --set foregate.proxy=$http_proxy \
+    --recreate-pods --dry-run
+-->
 
 <!--
 helm upgrade btcpay ./btcpayd --set args.externalUrl=http://localhost:23001/
@@ -167,11 +178,30 @@ helm install --namespace store --name wordpress asperitus/wordpress \
     --set externalDatabase.user=mysql \
     --set externalDatabase.password=secretPassword \
     --set externalDatabase.database=my_database \
-    --set foregate.enabled=true \
+    --set foregate.enabled=false \
     --set foregate.port=5080 \
     --set foregate.url=$URL \
     --set foregate.proxy=$http_proxy
 ```
+
+<!-- 
+helm upgrade wordpress asperitus/wordpress \
+    --set nameOverride=store \
+    --set serviceType=ClusterIP \
+    --set wordpressUsername=admin \
+    --set wordpressPassword=password \
+    --set mariadb.enabled=false \
+    --set externalDatabase.host=mysql-db.db \
+    --set externalDatabase.port=3306 \
+    --set externalDatabase.user=mysql \
+    --set externalDatabase.password=secretPassword \
+    --set externalDatabase.database=my_database \
+    --set foregate.enabled=false \
+    --set foregate.port=5080 \
+    --set foregate.url=$URL \
+    --set foregate.proxy=$http_proxy \
+    --recreate-pods --dry-run
+-->
 
 ### foregate
 
@@ -184,6 +214,21 @@ helm install --namespace store --name wordpress-foregate asperitus/foregate \
     --set foregate.hostport=wordpress-store:80 \
     --set foregate.proxy=$http_proxy
 ```
+
+<!--
+helm install --namespace fg --name jixupay asperitus/foregate \
+    --set foregate.port=5080 \
+    --set foregate.url=https://jixupay.run.aws-usw02-pr.ice.predix.io/ \
+    --set foregate.hostport=btcpayd.ln:23001 \
+    --set foregate.proxy=$http_proxy
+
+helm install --namespace fg --name jixustore asperitus/foregate \
+    --set foregate.port=5080 \
+    --set foregate.url=https://jixustore.run.aws-usw02-pr.ice.predix.io/ \
+    --set foregate.hostport=wordpress-store.store:80 \
+    --set foregate.proxy=$http_proxy
+
+-->
 
 ### dashboard
 
