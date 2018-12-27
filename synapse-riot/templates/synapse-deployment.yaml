@@ -23,9 +23,9 @@ spec:
         - name: POSTGRES_DB
           value: synapse
         - name: POSTGRES_HOST
-          value: postgres
+          value: {{ .Release.Name }}-postgres
         - name: POSTGRES_PORT
-          value: 5432
+          value: "5432"
         - name: POSTGRES_PASSWORD
           value: changeme
         - name: POSTGRES_USER
