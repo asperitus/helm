@@ -19,6 +19,7 @@ spec:
         io.kompose.service: synapse
     spec:
       containers:
+      # https://hub.docker.com/r/matrixdotorg/synapse/
       - env:
         - name: POSTGRES_DB
           value: synapse
@@ -32,6 +33,8 @@ spec:
           value: matrix
         - name: SYNAPSE_ENABLE_REGISTRATION
           value: "yes"
+        - name: SYNAPSE_ALLOW_GUEST
+          value: "yes"
         - name: SYNAPSE_LOG_LEVEL
           value: INFO
         - name: SYNAPSE_NO_TLS
@@ -39,7 +42,11 @@ spec:
         - name: SYNAPSE_REPORT_STATS
           value: "no"
         - name: SYNAPSE_SERVER_NAME
-          value: matrix.home
+          value: "{{ .Values.synapse.hostname }}.{{ .Values.synapse.subdomain }}"
+        # - name: SYNAPSE_TURN_URIS
+        #   value: "{{ .Values.synapse.turn.uris }}"
+        # - name: SYNAPSE_TURN_SECRET
+        #   value: "{{ .Values.synapse.turn.secret }}"
         image: matrixdotorg/synapse
         name: synapse
         ports:
@@ -49,7 +56,8 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: synapse-data
-      hostname: matrix
+      hostname: {{ .Values.synapse.hostname }}
+      subdomain: {{ .Values.synapse.subdomain }}
       restartPolicy: Always
       volumes:
       - name: synapse-data

@@ -3,6 +3,14 @@
 # Declare variables to be passed into your templates.
 
 ##
+synapse:
+  hostname: "matrix"
+  subdomain: "home"
+  turn:
+    uris: ""
+    secret: ""
+
+##
 postgresql:
   enabled: true
   #
