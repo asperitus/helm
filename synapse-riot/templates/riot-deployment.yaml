@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --chart --out synapse-riot
+    kompose.version: 1.16.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: riot
+  name: riot
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: riot
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -ecx
+        - |
+          echo "-p 8765" > /data/riot.im.conf; /start.sh
+        image: avhost/docker-matrix-riot
+        name: riot
+        ports:
+        - containerPort: 8765
+        resources: {}
+        volumeMounts:
+        - mountPath: /data
+          name: riot-data
+      hostname: riot
+      restartPolicy: Always
+      volumes:
+      - name: riot-data
+        persistentVolumeClaim:
+          claimName: riot-data
+status: {}

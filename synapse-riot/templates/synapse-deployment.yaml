@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --chart --out synapse-riot
+    kompose.version: 1.16.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: synapse
+  name: synapse
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: synapse
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_DB
+          value: synapse
+        - name: POSTGRES_HOST
+          value: postgres
+        - name: POSTGRES_PORT
+          value: 5432
+        - name: POSTGRES_PASSWORD
+          value: changeme
+        - name: POSTGRES_USER
+          value: matrix
+        - name: SYNAPSE_ENABLE_REGISTRATION
+          value: "yes"
+        - name: SYNAPSE_LOG_LEVEL
+          value: INFO
+        - name: SYNAPSE_NO_TLS
+          value: "yes"
+        - name: SYNAPSE_REPORT_STATS
+          value: "no"
+        - name: SYNAPSE_SERVER_NAME
+          value: matrix.home
+        image: matrixdotorg/synapse
+        name: synapse
+        ports:
+        - containerPort: 8448
+        - containerPort: 8008
+        resources: {}
+        volumeMounts:
+        - mountPath: /data
+          name: synapse-data
+      hostname: matrix
+      restartPolicy: Always
+      volumes:
+      - name: synapse-data
+        persistentVolumeClaim:
+          claimName: synapse-data
+status: {}

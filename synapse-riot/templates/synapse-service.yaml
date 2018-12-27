@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --chart --out synapse-riot
+    kompose.version: 1.16.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: synapse
+  name: synapse
+spec:
+  ports:
+  - name: "8448"
+    port: 8448
+    targetPort: 8448
+  - name: "8008"
+    port: 8008
+    targetPort: 8008
+  selector:
+    io.kompose.service: synapse
+status:
+  loadBalancer: {}
