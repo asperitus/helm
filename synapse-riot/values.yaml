@@ -9,6 +9,10 @@ synapse:
   turn:
     uris: ""
     secret: ""
+  #proxy
+  httpProxy: "http://host.docker.internal:18080/"
+  httpsProxy: "http://host.docker.internal:18080/"
+  noProxy: "localhost,127.0.0.1,.local"
 
 ##
 postgresql:

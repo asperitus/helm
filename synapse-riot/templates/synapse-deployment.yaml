@@ -47,6 +47,17 @@ spec:
         #   value: "{{ .Values.synapse.turn.uris }}"
         # - name: SYNAPSE_TURN_SECRET
         #   value: "{{ .Values.synapse.turn.secret }}"
+        # http proxy
+        - name: http_proxy
+          value: "{{ .Values.synapse.httpProxy }}"
+        - name: HTTP_PROXY
+          value: "{{ .Values.synapse.httpProxy }}"
+        - name: https_proxy
+          value: "{{ .Values.synapse.httpsProxy }}"
+        - name: HTTPS_PROXY
+          value: "{{ .Values.synapse.httpsProxy }}"
+        - name: no_proxy
+          value: "{{ .Values.synapse.noProxy }}"
         image: matrixdotorg/synapse
         name: synapse
         ports:

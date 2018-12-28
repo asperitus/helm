@@ -24,6 +24,18 @@ spec:
         - -ecx
         - |
           echo "-p 8765" > /data/riot.im.conf; /start.sh
+        env:
+        # http proxy
+        - name: http_proxy
+          value: "{{ .Values.synapse.httpProxy }}"
+        - name: HTTP_PROXY
+          value: "{{ .Values.synapse.httpProxy }}"
+        - name: https_proxy
+          value: "{{ .Values.synapse.httpsProxy }}"
+        - name: HTTPS_PROXY
+          value: "{{ .Values.synapse.httpsProxy }}"
+        - name: no_proxy
+          value: "{{ .Values.synapse.noProxy }}"
         image: avhost/docker-matrix-riot
         name: riot
         ports:
